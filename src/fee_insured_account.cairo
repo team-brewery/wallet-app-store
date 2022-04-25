@@ -14,8 +14,27 @@ from openzeppelin.account.library import (
 
 from openzeppelin.introspection.ERC165 import ERC165_supports_interface
 
-@storage_var
-func tx_fee_price_insured() -> (amount : felt):
+from contracts.IERC20 import IERC20
+from starkware.cairo.common.uint256 import Uint256
+
+struct InsuranceInfo:
+    member num_tx_insured : felt
+    member fixed_price_pr_tx : felt
+    member agreed_premium : felt
+end
+
+@contract_interface
+namespace IInsurer:
+    func get_current_premium() -> (premium : felt):
+    end
+
+    func settle_with_insured_user(
+        insured_address : felt, insurance_info: InsuranceInfo
+    ):
+    end
+
+    func get_user_to_insurance_info(user : felt) -> (info : InsuranceInfo):
+    end
 end
 
 @storage_var
@@ -23,35 +42,16 @@ func num_insured_transactions_left() -> (num : felt):
 end
 
 @storage_var
-func total_num_insured_transactions() -> (amount : felt):
-end
-
-@storage_var
 func insurer_address() -> (address : felt):
 end
 
 @storage_var
-func insurance_premium() -> (premium : felt):
+func hired_insurance_premium() -> (premium : felt):
 end
 
 #
 # Getters
 #
-
-@view
-func get_tx_fee_price_insured{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-    ) -> (amount : felt):
-    let (tx_fee) = tx_fee_price_insured.read()
-    return (tx_fee)
-end
-
-@view
-func get_total_num_insured_transactions{
-    syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr
-}() -> (amount : felt):
-    let (amount) = total_num_insured_transactions.read()
-    return (amount)
-end
 
 @view
 func get_num_insured_transactions_left{
@@ -65,15 +65,15 @@ end
 func get_insurer{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (
     address : felt
 ):
-    let (address) = insurer.read()
+    let (address) = insurer_address.read()
     return (address)
 end
 
 @view
-func get_premium{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (
+func get_hired_premium{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (
     premium : felt
 ):
-    let (_premium) = insurance_premium.read()
+    let (_premium) = hired_insurance_premium.read()
     return (_premium)
 end
 
@@ -164,10 +164,17 @@ func update_transaction_insurance_status{
     syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr
 }():
     alloc_locals
+    let (caller_address) = get_caller_address()
+    let (insurer_address) = get_insurer()
+    let (local insurance_info) = IInsurer.get_user_to_insurance_info(
+        insurer_address, caller_address
+    )
     let (num_tx_left) = get_num_insured_transactions_left()
-    let (num_insured_transactions) = get_total_num_insured_transactions()
+
+    let num_insured_transactions = insurance_info.num_tx_insured
 
     local new_num_insured_tx_left = num_insured_transactions - num_tx_left - 1
+
     num_insured_transactions_left.write(new_num_insured_tx_left)
 
     tempvar syscall_ptr = syscall_ptr
@@ -175,29 +182,21 @@ func update_transaction_insurance_status{
     tempvar range_check_ptr = range_check_ptr
 
     if new_num_insured_tx_left == 0:
-        settle_with_insurer()
+        settle_with_insurer(insurance_info)
     end
     return ()
 end
 
-@contract_interface
-namespace IInsurer:
-    func settle_with_insured(
-        insured_address : felt, tx_fee_price_insured : felt, num_tx_insured : felt
-    ):
-    end
-end
-
-func settle_with_insurer{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
-    let (tx_fee_price_insured) = get_tx_fee_price_insured()
-    let (num_tx_insured) = get_total_num_insured_transactions()
+func settle_with_insurer{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+    insurance_info : InsuranceInfo
+):
     let (insurer_address) = get_insurer()
     let (this_account_address) = get_contract_address()
-    IInsurer.settle_with_insured(
+
+    IInsurer.settle_with_insured_user(
         contract_address=insurer_address,
         insured_address=this_account_address,
-        tx_fee_price_insured=tx_fee_price_insured,
-        num_tx_insured=num_tx_insured,
+        insurance_info=insurance_info,
     )
     # TODO: check balances add up
     reset_num_insured_transactions_left()
