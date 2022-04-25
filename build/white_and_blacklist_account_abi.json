@@ -1,0 +1,293 @@
+[
+    {
+        "members": [
+            {
+                "name": "to",
+                "offset": 0,
+                "type": "felt"
+            },
+            {
+                "name": "selector",
+                "offset": 1,
+                "type": "felt"
+            },
+            {
+                "name": "data_offset",
+                "offset": 2,
+                "type": "felt"
+            },
+            {
+                "name": "data_len",
+                "offset": 3,
+                "type": "felt"
+            }
+        ],
+        "name": "AccountCallArray",
+        "size": 4,
+        "type": "struct"
+    },
+    {
+        "inputs": [],
+        "name": "get_security_mode",
+        "outputs": [
+            {
+                "name": "mode",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "address",
+                "type": "felt"
+            }
+        ],
+        "name": "get_is_address_whitelisted",
+        "outputs": [
+            {
+                "name": "bool",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "address",
+                "type": "felt"
+            }
+        ],
+        "name": "get_is_address_blacklisted",
+        "outputs": [
+            {
+                "name": "bool",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "mode",
+                "type": "felt"
+            }
+        ],
+        "name": "set_security_mode",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "address_to_whitelist",
+                "type": "felt"
+            },
+            {
+                "name": "bool",
+                "type": "felt"
+            }
+        ],
+        "name": "modify_whitelist_status",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "address_to_blacklist",
+                "type": "felt"
+            },
+            {
+                "name": "bool",
+                "type": "felt"
+            }
+        ],
+        "name": "modify_blacklist_status",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "index",
+                "type": "felt"
+            }
+        ],
+        "name": "get_whitelist_by_index",
+        "outputs": [
+            {
+                "name": "whitelisted_address",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "get_num_whitelisted_address",
+        "outputs": [
+            {
+                "name": "num",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "index",
+                "type": "felt"
+            }
+        ],
+        "name": "geblacklist_by_index",
+        "outputs": [
+            {
+                "name": "blacklist_address",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "get_num_blacklist_address",
+        "outputs": [
+            {
+                "name": "num",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "get_public_key",
+        "outputs": [
+            {
+                "name": "res",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "get_nonce",
+        "outputs": [
+            {
+                "name": "res",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "interfaceId",
+                "type": "felt"
+            }
+        ],
+        "name": "supportsInterface",
+        "outputs": [
+            {
+                "name": "success",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "new_public_key",
+                "type": "felt"
+            }
+        ],
+        "name": "set_public_key",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "public_key",
+                "type": "felt"
+            }
+        ],
+        "name": "constructor",
+        "outputs": [],
+        "type": "constructor"
+    },
+    {
+        "inputs": [
+            {
+                "name": "hash",
+                "type": "felt"
+            },
+            {
+                "name": "signature_len",
+                "type": "felt"
+            },
+            {
+                "name": "signature",
+                "type": "felt*"
+            }
+        ],
+        "name": "is_valid_signature",
+        "outputs": [],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "call_array_len",
+                "type": "felt"
+            },
+            {
+                "name": "call_array",
+                "type": "AccountCallArray*"
+            },
+            {
+                "name": "calldata_len",
+                "type": "felt"
+            },
+            {
+                "name": "calldata",
+                "type": "felt*"
+            },
+            {
+                "name": "nonce",
+                "type": "felt"
+            }
+        ],
+        "name": "__execute__",
+        "outputs": [
+            {
+                "name": "response_len",
+                "type": "felt"
+            },
+            {
+                "name": "response",
+                "type": "felt*"
+            }
+        ],
+        "type": "function"
+    }
+]

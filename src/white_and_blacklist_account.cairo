@@ -3,9 +3,16 @@
 
 %lang starknet
 
+from starkware.starknet.common.syscalls import get_contract_address, get_caller_address
 from starkware.cairo.common.cairo_builtins import HashBuiltin, SignatureBuiltin
 from starkware.cairo.common.alloc import alloc
 from starkware.cairo.common.registers import get_fp_and_pc
+from openzeppelin.access.ownable import (
+    Ownable_only_owner,
+    Ownable_initializer,
+    Ownable_get_owner
+)
+
 from openzeppelin.account.library import (
     AccountCallArray,
     Account_execute,
@@ -68,6 +75,33 @@ func get_is_address_blacklisted{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*
     return (is_blacklisted)
 end
 
+# #
+# # Guards
+# #
+
+# @view
+# func assert_only_self{
+#         syscall_ptr : felt*,
+#         pedersen_ptr : HashBuiltin*,
+#         range_check_ptr
+#     }():
+#     let (owner) = Ownable_get_owner()
+#     let (caller) = get_contract_address()
+#     assert self = caller
+#     return ()
+# end
+
+# @view
+# func assert_initialized{
+#         syscall_ptr : felt*,
+#         pedersen_ptr : HashBuiltin*,
+#         range_check_ptr
+#     }():
+#     let (_initialized) = initialized.read()
+#     assert _initialized = 1
+#     return ()
+# end
+
 @view
 func get_public_key{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (
     res : felt
@@ -90,15 +124,11 @@ func supportsInterface{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_c
     return (success)
 end
 
-#
-# Setters
-#
-
-# TODO: make onlyOwnable
 @external
 func set_security_mode{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
     mode : felt
 ):
+    Ownable_only_owner()
     security_mode.write(mode)
     return ()
 end
@@ -107,6 +137,7 @@ end
 func modify_whitelist_status{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
     address_to_whitelist : felt, bool : felt
 ):
+    Ownable_only_owner()
     is_address_whitelisted.write(address_to_whitelist, bool)
     return ()
 end
@@ -115,6 +146,7 @@ end
 func modify_blacklist_status{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
     address_to_blacklist : felt, bool : felt
 ):
+    Ownable_only_owner()
     is_address_blacklisted.write(address_to_blacklist, 1)
     return ()
 end
@@ -136,6 +168,8 @@ func constructor{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
     public_key : felt
 ):
     Account_initializer(public_key)
+    let (owner) = get_caller_address()
+    Ownable_initializer(owner)
     return ()
 end
 

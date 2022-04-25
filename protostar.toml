@@ -5,6 +5,6 @@ protostar_version = "0.1.0"
 libs_path = "lib"
 
 ["protostar.contracts"]
-main = [
-    "./src/main.cairo",
+white_and_blacklist_account = [
+    "./src/white_and_blacklist_account.cairo",
 ]
