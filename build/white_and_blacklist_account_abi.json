@@ -73,105 +73,6 @@
         "type": "function"
     },
     {
-        "inputs": [
-            {
-                "name": "mode",
-                "type": "felt"
-            }
-        ],
-        "name": "set_security_mode",
-        "outputs": [],
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "address_to_whitelist",
-                "type": "felt"
-            },
-            {
-                "name": "bool",
-                "type": "felt"
-            }
-        ],
-        "name": "modify_whitelist_status",
-        "outputs": [],
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "address_to_blacklist",
-                "type": "felt"
-            },
-            {
-                "name": "bool",
-                "type": "felt"
-            }
-        ],
-        "name": "modify_blacklist_status",
-        "outputs": [],
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "index",
-                "type": "felt"
-            }
-        ],
-        "name": "get_whitelist_by_index",
-        "outputs": [
-            {
-                "name": "whitelisted_address",
-                "type": "felt"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "get_num_whitelisted_address",
-        "outputs": [
-            {
-                "name": "num",
-                "type": "felt"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "index",
-                "type": "felt"
-            }
-        ],
-        "name": "geblacklist_by_index",
-        "outputs": [
-            {
-                "name": "blacklist_address",
-                "type": "felt"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "get_num_blacklist_address",
-        "outputs": [
-            {
-                "name": "num",
-                "type": "felt"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
         "inputs": [],
         "name": "get_public_key",
         "outputs": [
@@ -215,6 +116,47 @@
     {
         "inputs": [
             {
+                "name": "mode",
+                "type": "felt"
+            }
+        ],
+        "name": "set_security_mode",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "address_to_whitelist",
+                "type": "felt"
+            },
+            {
+                "name": "bool",
+                "type": "felt"
+            }
+        ],
+        "name": "modify_whitelist_status",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "address_to_blacklist",
+                "type": "felt"
+            },
+            {
+                "name": "bool",
+                "type": "felt"
+            }
+        ],
+        "name": "modify_blacklist_status",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
                 "name": "new_public_key",
                 "type": "felt"
             }
@@ -227,6 +169,10 @@
         "inputs": [
             {
                 "name": "public_key",
+                "type": "felt"
+            },
+            {
+                "name": "mode",
                 "type": "felt"
             }
         ],
