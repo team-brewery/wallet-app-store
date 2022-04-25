@@ -40,6 +40,10 @@ end
 func is_address_blacklisted(address : felt) -> (bool : felt):
 end
 
+#
+# Getters
+#
+
 @view
 func get_security_mode{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (
     mode : felt
@@ -63,85 +67,6 @@ func get_is_address_blacklisted{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*
     let (is_blacklisted) = is_address_blacklisted.read(address)
     return (is_blacklisted)
 end
-
-# TODO: make onlyOwnable
-@external
-func set_security_mode{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-    mode : felt
-):
-    security_mode.write(mode)
-    return ()
-end
-
-@external
-func modify_whitelist_status{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-    address_to_whitelist : felt, bool : felt
-):
-    is_address_whitelisted.write(address_to_whitelist, bool)
-    return ()
-end
-
-@external
-func modify_blacklist_status{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-    address_to_blacklist : felt, bool : felt
-):
-    is_address_blacklisted.write(address_to_blacklist, 1)
-    return ()
-end
-
-#
-# Deprecated
-#
-
-@storage_var
-func whitelist_by_index(index : felt) -> (whitelisted_address : felt):
-end
-
-@storage_var
-func num_whitelisted_address() -> (num : felt):
-end
-
-@storage_var
-func blacklist_by_index(index : felt) -> (blacklisted_address : felt):
-end
-
-@storage_var
-func num_blacklist_address() -> (num : felt):
-end
-
-@view
-func get_whitelist_by_index{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-    index : felt
-) -> (whitelisted_address : felt):
-    let (whitelisted_address) = whitelist_by_index.read(index)
-    return (whitelisted_address)
-end
-
-@view
-func get_num_whitelisted_address{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-    ) -> (num : felt):
-    let (num) = num_whitelisted_address.read()
-    return (num)
-end
-
-@view
-func geblacklist_by_index{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-    index : felt
-) -> (blacklist_address : felt):
-    let (blacklist_address) = blacklist_by_index.read(index)
-    return (blacklist_address)
-end
-
-@view
-func get_num_blacklist_address{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-    ) -> (num : felt):
-    let (num) = num_blacklist_address.read()
-    return (num)
-end
-
-#
-# End of Deprecated stuff
-#
 
 @view
 func get_public_key{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (
@@ -168,6 +93,31 @@ end
 #
 # Setters
 #
+
+# TODO: make onlyOwnable
+@external
+func set_security_mode{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+    mode : felt
+):
+    security_mode.write(mode)
+    return ()
+end
+
+@external
+func modify_whitelist_status{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+    address_to_whitelist : felt, bool : felt
+):
+    is_address_whitelisted.write(address_to_whitelist, bool)
+    return ()
+end
+
+@external
+func modify_blacklist_status{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+    address_to_blacklist : felt, bool : felt
+):
+    is_address_blacklisted.write(address_to_blacklist, 1)
+    return ()
+end
 
 @external
 func set_public_key{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
