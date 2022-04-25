@@ -11,12 +11,12 @@ from starkware.cairo.common.hash_state import (
     hash_init, hash_finalize, hash_update, hash_update_single
 )
 
-from openzeppelin.introspection.ERC165 import (
+from lauri.ERC165 import (
     ERC165_supports_interface, 
     ERC165_register_interface
 )
 
-from openzeppelin.utils.constants import IACCOUNT_ID
+from lauri.constants import IACCOUNT_ID
 
 #
 # Structs
@@ -107,8 +107,8 @@ func Account_initializer{
         syscall_ptr : felt*, 
         pedersen_ptr : HashBuiltin*,
         range_check_ptr
-    }(_public_key: felt):
-    Account_public_key.write(_public_key)
+    }():
+    #Account_public_key.write(_public_key)
     ERC165_register_interface(IACCOUNT_ID)
     return()
 end
@@ -163,7 +163,7 @@ func Account_execute{
     let (tx_info) = get_tx_info()
     let (_current_nonce) = Account_current_nonce.read()
 
-    # validate nonce
+    # validate nonce TODO: re-enable
     assert _current_nonce = nonce
 
     # TMP: Convert `AccountCallArray` to 'Call'.
@@ -171,8 +171,8 @@ func Account_execute{
     from_call_array_to_call(call_array_len, call_array, calldata, calls)
     let calls_len = call_array_len
 
-    # validate transaction
-    Account_is_valid_signature(tx_info.transaction_hash, tx_info.signature_len, tx_info.signature)
+    # validate transaction TODO: re-enable
+    #Account_is_valid_signature(tx_info.transaction_hash, tx_info.signature_len, tx_info.signature)
 
     # bump nonce
     Account_current_nonce.write(_current_nonce + 1)
