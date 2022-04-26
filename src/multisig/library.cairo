@@ -11,12 +11,12 @@ from starkware.cairo.common.hash_state import (
     hash_init, hash_finalize, hash_update, hash_update_single
 )
 
-from lauri.ERC165 import (
+from multisig.ERC165 import (
     ERC165_supports_interface, 
     ERC165_register_interface
 )
 
-from lauri.constants import IACCOUNT_ID
+from multisig.constants import IACCOUNT_ID
 
 #
 # Structs
