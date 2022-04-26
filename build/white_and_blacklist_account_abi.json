@@ -172,7 +172,7 @@
                 "type": "felt"
             },
             {
-                "name": "mode",
+                "name": "blacklist_address",
                 "type": "felt"
             }
         ],

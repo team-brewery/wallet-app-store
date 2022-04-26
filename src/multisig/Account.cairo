@@ -5,7 +5,7 @@
 
 from starkware.cairo.common.cairo_builtins import HashBuiltin, SignatureBuiltin
 from starkware.starknet.common.syscalls import get_contract_address
-from lauri.library import (
+from multisig.library import (
     AccountCallArray,
     Account_execute,
     Account_get_nonce,
@@ -15,9 +15,9 @@ from lauri.library import (
     Account_is_valid_signature
 )
 
-from lauri.ERC165 import ERC165_supports_interface 
+from multisig.ERC165 import ERC165_supports_interface 
 
-from lauri.multisig_library import (
+from multisig.multisig_library import (
     Transaction,
     multisig_is_owner,
     multisig_get_owners_len,

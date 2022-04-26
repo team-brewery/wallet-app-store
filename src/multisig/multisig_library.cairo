@@ -8,7 +8,7 @@ from starkware.cairo.common.cairo_builtins import HashBuiltin
 from starkware.cairo.common.math import assert_le, assert_lt
 from starkware.starknet.common.syscalls import call_contract, get_caller_address
 
-from lauri.constants import FALSE, TRUE
+from multisig.constants import FALSE, TRUE
 
 
 #

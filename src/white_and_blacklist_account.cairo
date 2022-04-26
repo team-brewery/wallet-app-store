@@ -31,19 +31,19 @@ const DEGEN = 1
 const FULL_DEGEN = 2
 
 @storage_var
-func security_mode(caller_adress: felt) -> (mode : felt):
+func security_mode() -> (mode : felt):
 end
 
 @storage_var
-func is_address_whitelisted(caller_adress: felt, address : felt) -> (bool : felt):
+func is_address_whitelisted(address : felt) -> (bool : felt):
 end
 
 @storage_var
-func is_address_blacklisted(caller_adress: felt, address : felt) -> (bool : felt):
+func is_address_blacklisted(address : felt) -> (bool : felt):
 end
 
 @storage_var
-func is_implementation_whitelisted() -> (bool :felt):
+func implementation_address_storage() -> (address : felt):
 end
 
 #
@@ -54,8 +54,7 @@ end
 func get_security_mode{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (
     mode : felt
 ):
-    let (_caller_address) = get_caller_address()
-    let (mode) = security_mode.read(_caller_address)
+    let (mode) = security_mode.read()
     return (mode)
 end
 
@@ -63,22 +62,15 @@ end
 func get_is_address_whitelisted{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
     address : felt
 ) -> (bool : felt):
-    let (_caller_address) = get_caller_address()
-    let (contract_address) = get_contract_address()
-    if contract_address == address:
-        return (TRUE)
-    else:
-        let (is_whitelisted) = is_address_whitelisted.read(_caller_address, address)
-        return (is_whitelisted)
-    end
+    let (is_whitelisted) = is_address_whitelisted.read(address)
+    return (is_whitelisted)
 end
 
 @view
 func get_is_address_blacklisted{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
     address : felt
 ) -> (bool : felt):
-    let (_caller_address) = get_caller_address()
-    let (is_blacklisted) = is_address_blacklisted.read(_caller_address, address)
+    let (is_blacklisted) = is_address_blacklisted.read(address)
     return (is_blacklisted)
 end
 
@@ -108,8 +100,7 @@ end
 func set_security_mode{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
     mode : felt
 ):
-    let (_caller_address) = get_caller_address()
-    security_mode.write(_caller_address, mode)
+    security_mode.write(mode)
     return ()
 end
 
@@ -117,8 +108,7 @@ end
 func modify_whitelist_status{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
     address_to_whitelist : felt, bool : felt
 ):
-    let (_caller_address) = get_caller_address()
-    is_address_whitelisted.write(_caller_address, address_to_whitelist, bool)
+    is_address_whitelisted.write(address_to_whitelist, bool)
     return ()
 end
 
@@ -126,8 +116,7 @@ end
 func modify_blacklist_status{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
     address_to_blacklist : felt, bool : felt
 ):
-    let (_caller_address) = get_caller_address()
-    is_address_blacklisted.write(_caller_address, address_to_blacklist, TRUE)
+    is_address_blacklisted.write(address_to_blacklist, TRUE)
     return ()
 end
 
@@ -145,14 +134,17 @@ end
 
 @constructor
 func constructor{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-    public_key : felt, mode : felt
-):
+    public_key : felt, blacklist_address : felt
+    ):
+    alloc_locals
     Account_initializer(public_key)
 
-    # We need to whitelist this contract so it can be called by account contracts
+    # # We need to whitelist this contract so it can be called by account contracts
     let (contract_address) = get_contract_address()
-    modify_whitelist_status(contract_address, TRUE)
-    _set_security_mode(mode) # SAFE MODE default
+    _initial_whitelist(contract_address)
+
+    # # Initially blacklist contract
+    _initial_blacklist(blacklist_address)
     return ()
 end
 
@@ -167,20 +159,6 @@ func is_valid_signature{
     Account_is_valid_signature(hash, signature_len, signature)
     return ()
 end
-
-@external
-func set_whitelist_implementation{
-    syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr, ecdsa_ptr : SignatureBuiltin*
-    }(address: felt):
-    let(has_been_initialized) = is_implementation_whitelisted.read()
-    with_attr error_message("IMPLEMENTATION HAS BEEN WHITELISTED"):
-        assert has_been_initialized = FALSE
-    end
-    modify_whitelist_status(address, TRUE)
-    is_implementation_whitelisted.write(1)
-    return()
-end
-
 
 @external
 func __execute__{
@@ -200,17 +178,6 @@ func __execute__{
 
     let selector = [calls].selector
 
-    # emergency_override
-    if selector == 1205090328239986150179692412881459612163409910210950210957524523286026684471:
-        let (response_len, response) = Account_execute(
-                call_array_len, call_array,
-                calldata_len,
-                calldata,
-                nonce
-            )
-        return (response_len=response_len, response=response)
-    end
-
     let (security_mode) = get_security_mode()
     let (__fp__, _) = get_fp_and_pc()
 
@@ -219,8 +186,8 @@ func __execute__{
     tempvar range_check_ptr = range_check_ptr
 
     if security_mode == SAFE:
-        check_if_call_array_is_all_whitelisted(calls_len, calls)
         check_if_call_array_has_some_blacklisted(calls_len, calls)
+        check_if_call_array_is_all_whitelisted(calls_len, calls)
         tempvar syscall_ptr = syscall_ptr
         tempvar pedersen_ptr = pedersen_ptr
         tempvar range_check_ptr = range_check_ptr
@@ -287,16 +254,34 @@ func check_if_call_array_has_some_blacklisted{
     end
     let contract_address = [calls].to
     let (is_blacklisted) = get_is_address_blacklisted(contract_address)
-    if is_blacklisted == TRUE:
-        return (TRUE)
+    with_attr error_message("BLACKLISTED"):
+        assert is_blacklisted = FALSE
     end
     return check_if_call_array_has_some_blacklisted(calls_len - 1, calls + 1)
 end
 
+
+#
+# Initialize
+#
+
 func _set_security_mode{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
     mode : felt
 ):
-    let (_caller_address) = get_caller_address()
-    security_mode.write(_caller_address, mode)
+    security_mode.write(mode)
+    return ()
+end
+
+func _initial_whitelist{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+    address : felt
+):
+    is_address_whitelisted.write(address, TRUE)
+    return ()
+end
+
+func _initial_blacklist{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+    address : felt
+):
+    is_address_blacklisted.write(address, TRUE)
     return ()
 end

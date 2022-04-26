@@ -59,8 +59,8 @@ func test_white_blacklist_contract{syscall_ptr : felt*, range_check_ptr}():
         SAFE = 0
         DEGEN = 1
         FULL_DEGEN = 2
-        ids.whiteblacklist_contract_address = deploy_contract("./src/white_and_blacklist_account.cairo", [1, SAFE]).contract_address 
         ids.evil_contract_address = deploy_contract("./src/evil_contract.cairo", []).contract_address
+        ids.whiteblacklist_contract_address = deploy_contract("./src/white_and_blacklist_account.cairo", [1, ids.evil_contract_address]).contract_address 
     %}
 
     ### SAFE MODE ###
@@ -85,33 +85,10 @@ func test_white_blacklist_contract{syscall_ptr : felt*, range_check_ptr}():
         contract_address=whiteblacklist_contract_address,
         address=evil_contract_address
     )
-
-    # Transaction should fail because
-    # tempvar deposit_selector : felt
-    # %{
-    #     from starkware.starknet.compiler.compile import get_selector_from_name
-    #     ids.deposit_selector = get_selector_from_name("deposit_eth")
-    # %}
-    # let call_array = AccountCallArray(
-    #                     to=whiteblacklist_contract_address,
-    #                     selector=deposit_selector,
-    #                     data_offset=2,
-    #                     data_len=
-    #                 )
-    # %{ stop_expecting_revert = expect_revert("StarknetErrorCode.TRANSACTION_FAILED") %}
-    #     whiteblacklist_contract_address.__execute__(
-    #         contract_address=whiteblacklist_contract_address,
-    #         call_array_len=1,
-    #         call_array_=
-    #     )
-
-    # %{ stop_expecting_revert() %}  
+    assert is_blacklisted = TRUE
     %{
         stop_prank()
     %}
-    assert is_blacklisted = TRUE
-
-    ###
 
     return ()
 
