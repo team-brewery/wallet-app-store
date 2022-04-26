@@ -42,10 +42,6 @@ end
 func is_address_blacklisted(address : felt) -> (bool : felt):
 end
 
-@storage_var
-func implementation_address_storage() -> (address : felt):
-end
-
 #
 # Getters
 #
@@ -125,6 +121,15 @@ func set_public_key{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_chec
     new_public_key : felt
 ):
     Account_set_public_key(new_public_key)
+    return ()
+end
+
+# Only once
+@external
+func initialize{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+    address : felt
+):
+    modify_whitelist_status(address, TRUE)
     return ()
 end
 

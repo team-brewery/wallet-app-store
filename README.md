@@ -18,11 +18,19 @@ LEVEL 2: FULL DEGEN
     - You like pain and throwing away money
 
 ## Commands
-
+### Install Protostar
+```
+curl -L https://raw.githubusercontent.com/software-mansion/protostar/master/install.sh | bash
+```
+### Add dependencies
+```
+protostar install https://github.com/OpenZeppelin/cairo-contracts
+```
+### Compile contracts
 ```
 protostar build --cairo-path ./lib/cairo_contracts/src
 ```
-
+### Testing
 ```
 protostar test ./tests --cairo-path ./lib/cairo_contracts/src
 ```
