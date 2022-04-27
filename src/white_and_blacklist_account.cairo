@@ -92,7 +92,6 @@ func supportsInterface{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_c
     return (success)
 end
 
-@external
 func set_security_mode{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
     mode : felt
 ):
@@ -126,9 +125,7 @@ end
 
 # Only once
 @external
-func initialize{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-    address : felt
-):
+func initialize{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(address : felt):
     modify_whitelist_status(address, TRUE)
     return ()
 end
@@ -140,7 +137,7 @@ end
 @constructor
 func constructor{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
     public_key : felt, blacklist_address : felt
-    ):
+):
     alloc_locals
     Account_initializer(public_key)
 
@@ -264,7 +261,6 @@ func check_if_call_array_has_some_blacklisted{
     end
     return check_if_call_array_has_some_blacklisted(calls_len - 1, calls + 1)
 end
-
 
 #
 # Initialize

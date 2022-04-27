@@ -28,9 +28,7 @@ namespace IInsurer:
     func get_current_premium() -> (premium : felt):
     end
 
-    func settle_with_insured_user(
-        insured_address : felt, insurance_info: InsuranceInfo
-    ):
+    func settle_with_insured_user(insured_address : felt, insurance_info : InsuranceInfo):
     end
 
     func get_user_to_insurance_info(user : felt) -> (info : InsuranceInfo):
