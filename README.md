@@ -19,9 +19,7 @@ We believe a **similar marketplace** will be needed for web3. In this project we
 
 [Here](https://pitch.com/public/3454e0c7-ec9d-4111-82c3-4486de25e252/bc44edd0-287d-4b90-8898-ceb42d12e185) are the slides of our project presentation.
 
-<img src="imgs/account_contract_store.png" alt="drawing" width="200"/>
-
-![image](imgs/account_contract_store.png =10x10)
+<img src="./imgs/account_contract_store.png" alt="drawing" width="200"/>
 
 ### White and Blacklist Account
 
