@@ -2,9 +2,12 @@
 
 Third (or 4th) winning project at the first StarkNet Hackathon (Amsterdam, 2022).
 
-The goal of this project is to create an "Account App Store". The motivation is the following: a typical web2 user can invest a limited amount of time and attention into selecting the apps that best fit their needs. Nevertheless, there are tens of thousands of different apps available. The way this is solved is, partially, is through the so-called "app-stores", where apps are rated by users and are organized by different categories.
+The goal of this project is to create an "Account App Store". The motivation is the following: a typical web2 user can invest a limited amount of time and attention into selecting the apps that best fit their needs. Nevertheless, there are tens of thousands of different apps available. The way this is solved is, partially, is through the so-called "app-stores", where apps are rated by users and are organized by different categories. Moreover, the app-store generates data which can be analysed in order to provide recomentations to the user, etc.
 
-We believe a similar marketplace will be needed for web3.
+We believe a similar marketplace will be needed for web3. In this project we created the first prototype of what a marketplace for account contracts in StarkNet could be. The idea is that when one creates an account through their wallet (Argent X, Braavoc, etc.), the user can select what type of account they want to deploy. Some examples of accounts we thought of are: 
+
+- 
+
 ## Description
 
 ### White and Blacklist Account
