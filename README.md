@@ -14,7 +14,7 @@ We believe a **similar marketplace** will be needed for web3. In this project we
 - Allowlist-Denylist Account (described below)
 - Multisignature Account
 - Custom Cryptographic Digital Signature Account
-- Fee insured account
+- Fee Insured Account
 - Mixes of the above
 - Etc.
 
