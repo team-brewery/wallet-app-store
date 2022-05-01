@@ -1,4 +1,10 @@
 # Wallet App Store
+
+Third (or 4th) winning project at the first StarkNet Hackathon (Amsterdam, 2022).
+
+The goal of this project is to create an "Account App Store". The motivation is the following: a typical web2 user can invest a limited amount of time and attention into selecting the apps that best fit their needs. Nevertheless, there are tens of thousands of different apps available. The way this is solved is, partially, is through the so-called "app-stores", where apps are rated by users and are organized by different categories.
+
+We believe a similar marketplace will be needed for web3.
 ## Description
 
 ### White and Blacklist Account
