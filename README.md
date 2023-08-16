@@ -2,7 +2,7 @@
 
 ## Description
 
-Third (or 4th) winning project at the first **StarkNet Hackathon** (Amsterdam, 2022).
+Second (or 3th) winning project at the first **StarkNet Hackathon** (Amsterdam, 2022).
 
 The goal of this project is to create an "Account App Store".
 
